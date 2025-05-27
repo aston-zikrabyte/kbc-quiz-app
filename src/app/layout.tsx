@@ -30,9 +30,9 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="green"
+          defaultTheme="light"
           enableSystem={false}
-          themes={["light", "dark", "green", "purple", "dark-green"]}
+          themes={["light", "dark"]}
         >
           {children}
         </ThemeProvider>

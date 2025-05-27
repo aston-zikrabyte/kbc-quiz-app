@@ -21,10 +21,6 @@ export function ThemeSwitcher() {
     <div className="flex flex-wrap gap-2 p-2">
       <Button onClick={() => handleSetTheme("light")}>Light Mode</Button>
       <Button onClick={() => handleSetTheme("dark")}>Dark Mode</Button>
-      <Button onClick={() => handleSetTheme("green")}>Light - Green</Button>
-      <Button onClick={() => handleSetTheme("dark-green")}>
-        Dark Green Colors
-      </Button>
     </div>
   );
 }
