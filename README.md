@@ -1,4 +1,4 @@
-# 🧪 man-next-app
+# 🧪 KBC QUIZ APP
 
 A modern, batteries-included **Next.js 15 boilerplate** with everything you actually want:
 
