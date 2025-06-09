@@ -15,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-[#050A0E] antialiased`}>
+      <head>
+        <style>{`html { scroll-behavior: smooth; }`}</style>
+      </head>
+      <body className={`font-calibre bg-[#050A0E] antialiased`}>
         <Navbar />
         {children}
         <Footer />

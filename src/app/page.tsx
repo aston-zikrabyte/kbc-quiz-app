@@ -28,6 +28,8 @@ export default function Home() {
         <div className="absolute top-[150px] right-[-200px] size-120 rounded-full bg-[radial-gradient(circle,_#AB39E84D_0%,_#050A0E_100%)] blur-2xl md:top-[1300px] md:size-110"></div>
       </div>
 
+      <div id="home"></div>
+
       <section className="grid min-h-screen grid-cols-1 gap-8 px-4 py-10 md:grid-cols-12 md:px-10 md:py-20 lg:gap-20 lg:px-20">
         <div className="order-2 flex flex-col justify-center gap-8 max-lg:items-center max-md:text-center md:order-1 md:col-span-7">
           <div>
@@ -93,6 +95,8 @@ export default function Home() {
         </div>
         <div className="order-1 mb-8 min-h-[200px] rounded-xl bg-gray-700 md:order-2 md:col-span-5 md:mb-0"></div>
       </section>
+
+      <div id="key-features"></div>
 
       <section className="flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white md:p-10">
         <div className="inline-block rounded-full bg-gradient-to-r from-purple-700 via-blue-600 to-cyan-400 p-[1px]">
@@ -319,8 +323,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div id="testimonials"></div>
 
-      <section className="flex min-h-[60vh] flex-col items-center gap-6 p-5 text-white md:p-10">
+      <section
+        id=""
+        className="flex min-h-[60vh] flex-col items-center gap-6 p-5 text-white md:p-10"
+      >
         <div className="inline-block rounded-full bg-gradient-to-r from-purple-700 via-blue-600 to-cyan-400 p-[1px]">
           <div className="w-full rounded-full bg-gray-900 px-3 py-2 text-sm md:text-base">
             Testimonial
@@ -376,6 +384,7 @@ export default function Home() {
         </Button>
       </section>
 
+      <div id="faqs"></div>
       <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-12 md:px-10 md:py-20 lg:px-20">
         <div className="flex flex-col items-start p-2 md:col-span-5 md:p-5">
           <p className="mb-5 text-3xl font-bold text-white sm:text-4xl md:text-5xl">

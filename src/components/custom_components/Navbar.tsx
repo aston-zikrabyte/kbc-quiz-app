@@ -16,16 +16,22 @@ const Navbar = () => {
 
         {/* Desktop Links */}
         <div className="hidden items-center justify-between gap-6 md:flex">
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link href={"#home"} className="duration-150 hover:text-purple-500">
             Home
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link
+            href={"#key-features"}
+            className="duration-150 hover:text-purple-500"
+          >
             How it works
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link
+            href={"#testimonials"}
+            className="duration-150 hover:text-purple-500"
+          >
             Testimonials
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link href={"#faqs"} className="duration-150 hover:text-purple-500">
             FAQ
           </Link>
         </div>
@@ -49,16 +55,22 @@ const Navbar = () => {
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
         <div className="animate-fadeInDropdown fixed top-16 right-0 left-0 z-[999] flex w-full flex-col gap-4 px-6 py-4 text-sm text-white shadow-2xl backdrop-blur-sm transition-all duration-300 ease-in-out md:hidden">
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link href={"#home"} className="duration-150 hover:text-purple-500">
             Home
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link
+            href={"#key-features"}
+            className="duration-150 hover:text-purple-500"
+          >
             How it works
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link
+            href={"#testimonials"}
+            className="duration-150 hover:text-purple-500"
+          >
             Testimonials
           </Link>
-          <Link href={"#"} className="duration-150 hover:text-purple-500">
+          <Link href={"#faqs"} className="duration-150 hover:text-purple-500">
             FAQ
           </Link>
           <Button size={"lg"}>Play Now</Button>
