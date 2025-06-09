@@ -15,7 +15,7 @@ const TestimonialBox = ({
   place,
 }: TestimonialBoxProps) => {
   return (
-    <div className="bg-background/5 border-background/4 flex flex-col gap-4 rounded-sm border-1 p-5">
+    <div className="bg-background/5 border-background/4 flex h-full flex-col gap-4 rounded-sm border-1 p-5">
       <p>⭐⭐⭐⭐⭐</p>
       <p className="text-gray-400 italic">&apos;{testimonial}&apos;</p>
       <div className="flex items-center gap-3">

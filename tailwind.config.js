@@ -4,6 +4,7 @@ export default {
     extend: {
       fontFamily: {
         base: ['"Base Neue"', "sans-serif"],
+        calibre: ['"Calibre"', "sans-serif"],
       },
     },
   },

@@ -6,6 +6,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -313,7 +320,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex min-h-[60vh] flex-col items-center gap-6 p-4 text-white md:p-10">
+      <section className="flex min-h-[60vh] flex-col items-center gap-6 p-5 text-white md:p-10">
         <div className="inline-block rounded-full bg-gradient-to-r from-purple-700 via-blue-600 to-cyan-400 p-[1px]">
           <div className="w-full rounded-full bg-gray-900 px-3 py-2 text-sm md:text-base">
             Testimonial
@@ -327,25 +334,42 @@ export default function Home() {
             Join thousands of happy players and start winning today!
           </p>
         </div>
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
-          <TestimonialBox
-            imgUrl="avatar_img2.jpg"
-            testimonial="This app is addictive! I made 2000 in just a while learning new things!"
-            name="Priya S"
-            place="Mumbai"
-          />
-          <TestimonialBox
-            imgUrl="avatar_img1.jpg"
-            testimonial="Smooth gameplay and no ads! I love the daily quizzes."
-            name="Rahul M"
-            place="Bengaluru"
-          />
-          <TestimonialBox
-            imgUrl="avatar_img3.jpg"
-            testimonial="Finally an app where my trivia knowledge pays off!"
-            name="Anoop K"
-            place="Delhi"
-          />
+        <div className="w-full max-w-6xl px-10">
+          <Carousel
+            opts={{
+              loop: true,
+              align: "start",
+            }}
+          >
+            <CarouselContent>
+              <CarouselItem className="basis-full sm:basis-1/2 lg:basis-1/3">
+                <TestimonialBox
+                  imgUrl="avatar_img2.jpg"
+                  testimonial="This app is addictive! I made 2000 in just a while learning new things!"
+                  name="Priya S"
+                  place="Mumbai"
+                />
+              </CarouselItem>
+              <CarouselItem className="basis-full sm:basis-1/2 lg:basis-1/3">
+                <TestimonialBox
+                  imgUrl="avatar_img1.jpg"
+                  testimonial="Smooth gameplay and no ads! I love the daily quizzes."
+                  name="Rahul M"
+                  place="Bengaluru"
+                />
+              </CarouselItem>
+              <CarouselItem className="basis-full sm:basis-1/2 lg:basis-1/3">
+                <TestimonialBox
+                  imgUrl="avatar_img3.jpg"
+                  testimonial="Finally an app where my trivia knowledge pays off!"
+                  name="Anoop K"
+                  place="Delhi"
+                />
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
         </div>
         <Button size={"lg"} className="w-full sm:w-auto">
           Start Playing Now
@@ -367,7 +391,7 @@ export default function Home() {
           </Button>
         </div>
         <div className="md:col-span-7">
-          <Accordion type="multiple">
+          <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>Can I win real money?</AccordionTrigger>
               <AccordionContent>
