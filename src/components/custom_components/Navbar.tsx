@@ -4,9 +4,15 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const goToLogin = () => {
+    router.push("/login");
+  };
 
   return (
     <>
@@ -16,22 +22,22 @@ const Navbar = () => {
 
         {/* Desktop Links */}
         <div className="hidden items-center justify-between gap-6 md:flex">
-          <Link href={"#home"} className="duration-150 hover:text-purple-500">
+          <Link href={"/#home"} className="duration-150 hover:text-purple-500">
             Home
           </Link>
           <Link
-            href={"#key-features"}
+            href={"/#key-features"}
             className="duration-150 hover:text-purple-500"
           >
             How it works
           </Link>
           <Link
-            href={"#testimonials"}
+            href={"/#testimonials"}
             className="duration-150 hover:text-purple-500"
           >
             Testimonials
           </Link>
-          <Link href={"#faqs"} className="duration-150 hover:text-purple-500">
+          <Link href={"/#faqs"} className="duration-150 hover:text-purple-500">
             FAQ
           </Link>
         </div>
@@ -48,32 +54,36 @@ const Navbar = () => {
 
         {/* CTA Button */}
         <div className="hidden md:block">
-          <Button size={"lg"}>Play Now</Button>
+          <Button size={"lg"} onClick={goToLogin}>
+            Play Now
+          </Button>
         </div>
       </div>
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
         <div className="animate-fadeInDropdown fixed top-16 right-0 left-0 z-[999] flex w-full flex-col gap-4 px-6 py-4 text-sm text-white shadow-2xl backdrop-blur-sm transition-all duration-300 ease-in-out md:hidden">
-          <Link href={"#home"} className="duration-150 hover:text-purple-500">
+          <Link href={"/#home"} className="duration-150 hover:text-purple-500">
             Home
           </Link>
           <Link
-            href={"#key-features"}
+            href={"/#key-features"}
             className="duration-150 hover:text-purple-500"
           >
             How it works
           </Link>
           <Link
-            href={"#testimonials"}
+            href={"/#testimonials"}
             className="duration-150 hover:text-purple-500"
           >
             Testimonials
           </Link>
-          <Link href={"#faqs"} className="duration-150 hover:text-purple-500">
+          <Link href={"/#faqs"} className="duration-150 hover:text-purple-500">
             FAQ
           </Link>
-          <Button size={"lg"}>Play Now</Button>
+          <Button size={"lg"} onClick={goToLogin}>
+            Play Now
+          </Button>
         </div>
       )}
     </>

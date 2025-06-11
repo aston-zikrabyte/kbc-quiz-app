@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import "./globals.css";
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
+import HomeNavbar from "@/components/custom_components/HomeNavbar";
+import SideBar from "@/components/custom_components/SideBar";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "KBC Quiz",
@@ -13,14 +14,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <style>{`html { scroll-behavior: smooth; }`}</style>
-      </head>
-      <body className={`font-calibre bg-[#050A0E]`}>
-        <BackgroundGradient />
-        {children}
-      </body>
-    </html>
+    <>
+      <HomeNavbar />
+      <SideBar />
+      <BackgroundGradient />
+      {children}
+    </>
   );
 }
