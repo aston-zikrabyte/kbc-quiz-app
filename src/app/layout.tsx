@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
+import HomeLayout from "@/components/custom_components/HomeLayout";
 
 export const metadata: Metadata = {
   title: "KBC Quiz",
@@ -19,7 +20,7 @@ export default function RootLayout({
       </head>
       <body className={`font-calibre bg-[#050A0E]`}>
         <BackgroundGradient />
-        {children}
+        <HomeLayout>{children}</HomeLayout>
       </body>
     </html>
   );

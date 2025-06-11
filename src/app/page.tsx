@@ -16,17 +16,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Footer from "@/components/custom_components/Footer";
-import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
-import Navbar from "@/components/custom_components/Navbar";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
       <div className="static z-10 flex h-full flex-col gap-10 overflow-visible min-[2000px]:px-80 min-[3200px]:px-120">
-        {/* Gradient Backgrounds - absolutely positioned, behind all content including navbar */}
-        <BackgroundGradient />
         {/* Main Content */}
         <section
           id="home"
@@ -480,7 +474,6 @@ export default function Home() {
             </Accordion>
           </div>
         </section>
-        <Footer />
       </div>
     </>
   );
