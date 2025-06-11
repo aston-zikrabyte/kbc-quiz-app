@@ -13,7 +13,7 @@ const HomeLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const isHomePage = pathname === "/home";
   const isLoginPage = pathname === "/login";
   const isOtpVerificationPage = pathname === "/otp-verification";
-  const isProfilePage = pathname === "/profile";
+  const isProfilePage = pathname.startsWith("/profile");
   const isLeaderboardPage = pathname === "/leaderboard";
   const isWalletPage = pathname === "/wallet";
 

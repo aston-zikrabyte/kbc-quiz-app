@@ -9,8 +9,8 @@ const SideBar = () => {
   const pathname = usePathname();
   const isHomeButtonActive = pathname === "/home";
   const isRewardsButtonActive = pathname === "/leaderboard";
-  const isWalletButtonActive = pathname === "/wallet";
-  const isProfileButtonActive = pathname === "/profile";
+  const isWalletButtonActive = pathname.startsWith("/wallet");
+  const isProfileButtonActive = pathname.startsWith("/profile");
   const activeButtonStyle = {
     style:
       "border-t-2 border-t-[#4BE0F1] bg-gradient-to-t from-[#0E161F] to-[#2e9ba8] md:border-t-0 md:border-l-4 md:border-l-[#4BE0F1]",

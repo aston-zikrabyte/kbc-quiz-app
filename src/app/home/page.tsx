@@ -14,9 +14,6 @@ const HomePage = () => {
   return (
     <section className="static h-[90vh] flex-col justify-center px-5 py-5 text-2xl font-bold text-white max-[400px]:mb-30 md:ml-48 md:px-20 lg:px-40 xl:px-60 2xl:px-90">
       <div className="mb-5 flex items-center justify-end gap-3">
-        <div className="flex h-12 items-center rounded-full border-t-1 border-t-gray-800 bg-[#0E161F] p-3">
-          <p className="text-sm">🪙 5000</p>
-        </div>
         {/* <div className="rounded-full border-t-1 border-t-gray-800 bg-[#0E161F] p-3">
           <Image
             src={"/icons/notification.png"}

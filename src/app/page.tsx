@@ -20,7 +20,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <div className="static z-10 flex h-full flex-col gap-10 overflow-visible min-[2000px]:px-80 min-[3200px]:px-120">
+      <div className="static z-10 flex h-full flex-col gap-20 overflow-visible min-[2000px]:px-80 min-[3200px]:px-120">
         {/* Main Content */}
         <section
           id="home"
