@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,7 +9,6 @@ import Image from "next/image";
 
 const Login = () => {
   const [mobileNumber, setMobileNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("+91");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAgeChecked, setIsAgeChecked] = useState(false);
 
@@ -31,11 +23,6 @@ const Login = () => {
       setIsDisabled(true);
     }
     setMobileNumber(value);
-  };
-
-  // Function to handle country code selection change
-  const handleCountryChange = (value: string) => {
-    setCountryCode(value);
   };
 
   const handleAgeCheck = (checked: boolean) => {
@@ -53,7 +40,7 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login or registration logic here
-    alert(`Mobile Number: ${countryCode}-${mobileNumber}`);
+    alert(`Mobile Number: ${mobileNumber}`);
     if (mobileNumber) {
       router.push("/otp-verification");
       return;
@@ -65,7 +52,7 @@ const Login = () => {
       <div className="flex h-full w-full max-w-xs flex-col items-center justify-center gap-5 sm:max-w-sm md:max-w-md md:gap-10 lg:max-w-lg">
         <div>
           <Image
-            src="/logo.png"
+            src="/img/login.png"
             alt="Logo"
             width={96}
             height={96}
@@ -80,27 +67,17 @@ const Login = () => {
         </div>
         <form className="flex w-full flex-col gap-4">
           <div className="flex w-full">
-            <Select onValueChange={handleCountryChange} defaultValue="+91">
-              <SelectTrigger className="shadow-b-md max-w-[100px] min-w-[70px] rounded-l-full border-0 border-t-2 border-b-4 border-t-slate-700 border-b-black bg-slate-950 py-7 text-sm text-white focus:ring-0 focus:outline-none sm:text-base">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-950 text-white">
-                <SelectItem value="+91">+91</SelectItem>
-                <SelectItem value="+1">+1</SelectItem>
-                <SelectItem value="+44">+44</SelectItem>
-                <SelectItem value="+61">+61</SelectItem>
-                <SelectItem value="+971">+971</SelectItem>
-              </SelectContent>
-              {/* Add more country codes as needed */}
-            </Select>
+            <div className="flex h-16 max-w-[80px] min-w-[60px] items-center justify-center rounded-l-full border-0 border-t-2 border-b-4 border-t-slate-700 border-b-black bg-[#0E161F]/80 py-2 text-white focus:ring-0 focus:outline-none sm:text-base">
+              +91
+            </div>
             <input
               type="tel"
               placeholder="Mobile Number"
-              className="w-full rounded-r-full border-t-2 border-b-4 border-t-slate-700 border-b-black bg-slate-950 px-3 py-2 text-sm text-white focus:ring-0 focus:outline-none sm:text-base"
+              className="w-full rounded-r-full border-t-2 border-b-4 border-t-slate-700 border-b-black bg-[#0E161F]/80 px-3 py-2 text-white focus:ring-0 focus:outline-none sm:text-base"
               pattern="[0-9]{10,15}"
               value={mobileNumber}
               onChange={handleMobileChange}
-              maxLength={10} // Adjust based on the maximum length of the mobile number
+              maxLength={10}
               required
             />
           </div>

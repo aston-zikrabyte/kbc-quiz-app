@@ -3,6 +3,8 @@
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import React, { useRef, useState, useEffect } from "react";
 
 const OtpVerification = () => {
@@ -11,6 +13,7 @@ const OtpVerification = () => {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(30);
+  const router = useRouter();
 
   // Timer effect
   useEffect(() => {
@@ -72,7 +75,11 @@ const OtpVerification = () => {
     const otp = inputRefs.current.map(input => input?.value).join("");
 
     if (otp.length === 4) {
-      alert(`OTP ${otp} verified successfully!`);
+      if (otp === "1234") {
+        router.replace("/home");
+      } else {
+        alert("Invalid otp");
+      }
     } else {
       alert("Please enter a valid 4-digit OTP.");
     }
@@ -94,7 +101,7 @@ const OtpVerification = () => {
       <div className="flex h-full w-full max-w-xs flex-col items-center justify-center gap-3 sm:max-w-sm md:max-w-md md:gap-10 lg:max-w-lg">
         <div>
           <Image
-            src="/logo.png"
+            src="/img/login.png"
             alt="Logo"
             width={96}
             height={96}

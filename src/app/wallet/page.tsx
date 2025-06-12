@@ -65,9 +65,10 @@ const WalletPage = () => {
   return (
     <section className="static flex h-[90vh] flex-col gap-5 px-5 py-5 font-bold text-white md:ml-48 md:px-20 lg:px-40 xl:px-60">
       <p className="text-4xl">Wallet</p>
-      <div className="flex w-full items-center justify-center gap-1 rounded-full bg-[#0E161F] p-2">
+      <div className="flex w-full items-center justify-center gap-1 rounded-full border-t-2 border-t-[#202c38] bg-[#0E161F] px-3 py-2">
         <Button
           variant={activeTab === "wallet" ? "secondary" : "ghost"}
+          size={"lg"}
           className={`w-1/2 font-thin ${activeTab === "wallet" ? "" : "bg-[#0E161F] text-white"}`}
           onClick={() => setActiveTab("wallet")}
         >
@@ -75,6 +76,7 @@ const WalletPage = () => {
         </Button>
         <Button
           variant={activeTab === "bonus" ? "secondary" : "ghost"}
+          size={"lg"}
           className={`w-1/2 font-thin ${activeTab === "bonus" ? "" : "bg-[#0E161F] text-white"}`}
           onClick={() => setActiveTab("bonus")}
         >
@@ -88,32 +90,36 @@ const WalletPage = () => {
             <p className="font-light">Available Balance</p>
             <p className="text-3xl">₹{2000}</p>
             <div className="mt-5 flex w-full flex-col justify-evenly gap-3 sm:w-auto sm:flex-row sm:gap-4">
-              <Button
-                size={"lg"}
-                className="flex items-center justify-center bg-[#8D45B5] text-white hover:bg-[#8D45B5]/80"
-              >
-                <Image
-                  src="/icons/add.png"
-                  alt="Add Money"
-                  width={18}
-                  height={18}
-                  className="mr-2"
-                />
-                Add Money
-              </Button>
-              <Button
-                size={"lg"}
-                className="flex items-center justify-center bg-[#8D45B5] text-white hover:bg-[#8D45B5]/80"
-              >
-                <Image
-                  src="/icons/withdraw.png"
-                  alt="Withdraw Money"
-                  width={18}
-                  height={18}
-                  className="mr-2"
-                />
-                Withdraw
-              </Button>
+              <Link href={"/wallet/add-money"}>
+                <Button
+                  size={"lg"}
+                  className="flex items-center justify-center bg-[#8D45B5] text-white hover:bg-[#8D45B5]/80"
+                >
+                  <Image
+                    src="/icons/add.png"
+                    alt="Add Money"
+                    width={18}
+                    height={18}
+                    className="mr-2"
+                  />
+                  Add Money
+                </Button>
+              </Link>
+              <Link href={"/wallet/withdraw"}>
+                <Button
+                  size={"lg"}
+                  className="flex items-center justify-center bg-[#8D45B5] text-white hover:bg-[#8D45B5]/80"
+                >
+                  <Image
+                    src="/icons/withdraw.png"
+                    alt="Withdraw Money"
+                    width={18}
+                    height={18}
+                    className="mr-2"
+                  />
+                  Withdraw
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="max-md:mb-20">

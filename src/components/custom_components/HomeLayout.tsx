@@ -20,12 +20,9 @@ const HomeLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <>
       {isLandingPage && <Navbar />}
-      {(isHomePage ||
-        isProfilePage ||
-        isLeaderboardPage ||
-        isWalletPage ||
-        isLoginPage ||
-        isOtpVerificationPage) && <HomeNavbar />}
+      {(!isLandingPage || isLoginPage || isOtpVerificationPage) && (
+        <HomeNavbar />
+      )}
       {(isHomePage || isProfilePage || isLeaderboardPage || isWalletPage) && (
         <SideBar />
       )}

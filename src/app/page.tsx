@@ -20,7 +20,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <div className="static z-10 flex h-full flex-col gap-20 overflow-visible min-[2000px]:px-80 min-[3200px]:px-120">
+      <div className="static z-10 flex h-full flex-col overflow-visible max-md:gap-20 min-[2000px]:px-80 min-[3200px]:px-120">
         {/* Main Content */}
         <section
           id="home"
@@ -102,9 +102,10 @@ export default function Home() {
           </div>
         </section>
 
-        <div id="key-features"></div>
-
-        <section className="flex h-[80vh] flex-col items-center justify-center gap-6 p-4 text-white md:p-10">
+        <section
+          id="key-features"
+          className="flex h-[80vh] flex-col items-center justify-center gap-6 p-4 text-white md:p-10"
+        >
           <div className="inline-block rounded-full bg-gradient-to-r from-purple-700 via-blue-600 to-cyan-400 p-[1px]">
             <div className="w-full rounded-full bg-gray-900 px-3 py-2 text-sm md:text-base">
               Key Features
@@ -223,6 +224,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
         <section className="grid min-h-screen w-full grid-cols-1 gap-8 px-4 py-10 md:grid-cols-12 md:px-10 md:py-20 lg:gap-20 lg:px-20">
           <div className="order-2 flex flex-col justify-center md:order-1 md:col-span-7 md:p-4">
             <div>
@@ -362,11 +364,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <div id="testimonials"></div>
 
         <section
-          id=""
-          className="flex min-h-[60vh] flex-col items-center gap-6 p-5 text-white md:p-10"
+          id="testimonials"
+          className="flex max-h-[60vh] flex-col items-center gap-6 p-5 text-white md:p-10"
         >
           <div className="inline-block rounded-full bg-gradient-to-r from-purple-700 via-blue-600 to-cyan-400 p-[1px]">
             <div className="w-full rounded-full bg-gray-900 px-3 py-2 text-sm md:text-base">

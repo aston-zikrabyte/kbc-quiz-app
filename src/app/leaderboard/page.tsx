@@ -97,7 +97,7 @@ const LeaderboardPage = () => {
             <p>Your position:</p>
           </div>
           <div className="flex h-20 items-center gap-3 rounded-2xl bg-gray-700 p-3">
-            <p className="bg-gray-800 mask-clip-border px-4 py-3 text-lg">💪</p>
+            <p className="py-3 pl-4 text-lg">💪</p>
             <p>Keep pushing</p>
           </div>
           <div className="my-3 h-50 overflow-y-scroll">

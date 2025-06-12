@@ -17,8 +17,7 @@ const ProfilePage = () => {
             <AvatarFallback>Profile Pic</AvatarFallback>
           </Avatar>
         </div>
-        <p className="text-2xl">Full Name</p>
-        <p className="text-lg text-gray-500">9955845125</p>
+        <p className="text-2xl">John Doe</p>
       </div>
       <div className="grid grid-flow-row lg:grid-cols-2">
         <div className="p-2">

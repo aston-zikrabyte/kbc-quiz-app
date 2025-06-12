@@ -9,10 +9,11 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const HomePage = () => {
   return (
-    <section className="static h-[90vh] flex-col justify-center px-5 py-5 text-2xl font-bold text-white max-[400px]:mb-30 md:ml-48 md:px-20 lg:px-40 xl:px-60 2xl:px-90">
+    <div className="static h-[90vh] flex-col justify-center px-5 py-5 text-2xl font-bold text-white max-[400px]:mb-24 md:ml-48 md:px-20">
       <div className="mb-5 flex items-center justify-end gap-3">
         {/* <div className="rounded-full border-t-1 border-t-gray-800 bg-[#0E161F] p-3">
           <Image
@@ -69,25 +70,27 @@ const HomePage = () => {
             <div className="relative z-10 flex h-full flex-col justify-between">
               <div>
                 <Image
-                  src="/globe.svg"
+                  src="/img/cash-games.png"
                   alt="something"
                   height={50}
                   width={50}
                 />
                 <p className="mt-3 w-1/2 text-2xl font-bold">CASH GAMES</p>
               </div>
-              <Button
-                size={"lg"}
-                variant={"secondary"}
-                className="w-20 rounded-lg"
-              >
-                <Image
-                  src="/icons/right-arrow.png"
-                  alt="right arrow"
-                  height={30}
-                  width={30}
-                />
-              </Button>
+              <Link href={"/cash-games"}>
+                <Button
+                  size={"lg"}
+                  variant={"secondary"}
+                  className="w-20 rounded-lg"
+                >
+                  <Image
+                    src="/icons/right-arrow.png"
+                    alt="right arrow"
+                    height={30}
+                    width={30}
+                  />
+                </Button>
+              </Link>
             </div>
           </div>
           <div
@@ -104,26 +107,28 @@ const HomePage = () => {
             <div className="relative z-10 flex h-full flex-col justify-between">
               <div>
                 <Image
-                  src="/globe.svg"
+                  src="/img/practice-games.png"
                   alt="something"
                   height={50}
                   width={50}
                 />
                 <p className="mt-3 w-1/2 text-2xl font-bold">PRACTICE GAMES</p>
               </div>
-              <Button size={"lg"} className="w-20 rounded-lg">
-                <Image
-                  src="/icons/right-arrow.png"
-                  alt="right arrow"
-                  height={25}
-                  width={25}
-                />
-              </Button>
+              <Link href={"/practice-games"}>
+                <Button size={"lg"} className="w-20 rounded-lg">
+                  <Image
+                    src="/icons/right-arrow.png"
+                    alt="right arrow"
+                    height={25}
+                    width={25}
+                  />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
