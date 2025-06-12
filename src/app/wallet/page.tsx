@@ -89,8 +89,8 @@ const WalletPage = () => {
           <div className="flex flex-col items-start gap-2 rounded-xl bg-gradient-to-b from-[#DC83FB] via-[#952FD3] to-[#4D116C] p-3">
             <p className="font-light">Available Balance</p>
             <p className="text-3xl">₹{2000}</p>
-            <div className="mt-5 flex w-full flex-col justify-evenly gap-3 sm:w-auto sm:flex-row sm:gap-4">
-              <Link href={"/wallet/add-money"}>
+            <div className="mt-5 flex w-full flex-row justify-evenly gap-3 sm:w-auto sm:gap-4">
+              <Link href={"/wallet/add-money"} className="">
                 <Button
                   size={"lg"}
                   className="flex items-center justify-center bg-[#8D45B5] text-white hover:bg-[#8D45B5]/80"
