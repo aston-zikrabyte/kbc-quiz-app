@@ -90,6 +90,7 @@ const ProfileEdit = () => {
               value={userData.mobile}
               onChange={handleMobile}
               className="w-full focus:border-none focus:outline-none"
+              readOnly
             />
           </div>
         </div>

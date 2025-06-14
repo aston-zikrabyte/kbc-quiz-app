@@ -11,7 +11,7 @@ const Navbar = () => {
   const router = useRouter();
 
   const goToLogin = () => {
-    router.push("/login");
+    router.push("/home");
   };
 
   return (

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const Login = () => {
+  const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [mobileNumber, setMobileNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAgeChecked, setIsAgeChecked] = useState(false);
@@ -36,14 +37,23 @@ const Login = () => {
   };
 
   // Function to handle form submission
-  // This function will log the mobile number and country code
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login or registration logic here
-    alert(`Mobile Number: ${mobileNumber}`);
-    if (mobileNumber) {
-      router.push("/otp-verification");
-      return;
+    const response = await fetch(`${ServerUrl}account/login-or-signup/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone_number: `+91${mobileNumber}` }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if (data) {
+        document.cookie = `phone_number=+91${mobileNumber}; max-age=300`;
+        router.push("/otp-verification");
+        return;
+      }
     }
   };
 
@@ -59,8 +69,8 @@ const Login = () => {
             className="size-24 rounded-full border-2 border-white"
           />
         </div>
-        <div>
-          <h1 className="mb-1 text-center text-3xl font-bold sm:text-4xl">
+        <div className="text-center">
+          <h1 className="mb-1 text-3xl font-bold sm:text-4xl">
             Login / Register
           </h1>
           <p className="mb-6">Please enter your mobile number</p>

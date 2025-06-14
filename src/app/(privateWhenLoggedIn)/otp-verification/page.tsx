@@ -2,6 +2,7 @@
 
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
 import { Button } from "@/components/ui/button";
+import { getPhoneNumber } from "@/lib/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -9,11 +10,27 @@ import React, { useRef, useState, useEffect } from "react";
 
 const OtpVerification = () => {
   const OTP_TIMER_KEY = "otp_timer_end"; // Key for localStorage to store the timer state
-  const mobileNumber = "+91-1234567890";
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(30);
   const router = useRouter();
+  const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  const [deviceId, setDeviceId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Runs only in the browser
+    setDeviceId(navigator.userAgent);
+  }, []);
+
+  const [mobileNumber, setMobileNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchNumber = async () => {
+      const number = await getPhoneNumber();
+      setMobileNumber(number);
+    };
+    fetchNumber();
+  }, [router]);
 
   // Timer effect
   useEffect(() => {
@@ -70,15 +87,33 @@ const OtpVerification = () => {
     }
   };
 
-  const handleOtpVerification = (e: React.FormEvent) => {
+  const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     const otp = inputRefs.current.map(input => input?.value).join("");
-
     if (otp.length === 4) {
-      if (otp === "1234") {
+      const response = await fetch(`${ServerUrl}account/verify-otp/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone_number: mobileNumber,
+          device_id: deviceId,
+          otp: otp,
+        }),
+      });
+      const data = await response.json();
+      if (data.message) {
+        router.replace("/setup");
+      } else if (data.access) {
+        document.cookie = `phone_number=; max-age=; path=/`;
+        document.cookie = `access_token=${data.access}; max-age=300; path=/`;
+        document.cookie = `refresh_token=${data.refresh}; max-age=500; path=/`;
+        document.cookie = `user_name=${data.user_name}; max-age=300; path=/`;
+        document.cookie = `role=${data.role}; max-age=300; path=/`;
         router.replace("/home");
       } else {
-        alert("Invalid otp");
+        alert(data.error);
       }
     } else {
       alert("Please enter a valid 4-digit OTP.");
@@ -96,7 +131,7 @@ const OtpVerification = () => {
   };
 
   return (
-    <div className="static z-10 flex h-[90vh] flex-col items-center justify-center text-lg text-white">
+    <div className="static z-10 flex h-[89vh] flex-col items-center justify-center text-lg text-white">
       <BackgroundGradient />
       <div className="flex h-full w-full max-w-xs flex-col items-center justify-center gap-3 sm:max-w-sm md:max-w-md md:gap-10 lg:max-w-lg">
         <div>

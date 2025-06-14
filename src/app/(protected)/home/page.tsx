@@ -64,6 +64,7 @@ const HomePage = () => {
               src="/img/glare-purple.png"
               alt="glare purple background"
               fill
+              sizes=""
               style={{ objectFit: "cover", zIndex: 0 }}
               className="pointer-events-none rounded-3xl select-none"
             />
