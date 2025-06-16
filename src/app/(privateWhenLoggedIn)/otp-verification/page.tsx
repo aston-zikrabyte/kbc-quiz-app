@@ -114,7 +114,7 @@ const OtpVerification = () => {
         document.cookie = `user_name=${data.user_name}; max-age=1000; path=/`;
         document.cookie = `role=${data.role}; max-age=1000; path=/`;
         setIsLoading(true);
-        setTimeout(() => router.replace("/home"), 1000);
+        setTimeout(() => (window.location.href = "/home"), 1000);
       } else {
         alert(data.error);
       }
