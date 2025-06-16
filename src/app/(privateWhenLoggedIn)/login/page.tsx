@@ -6,12 +6,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Loading from "@/components/custom_components/Loading";
 
 const Login = () => {
   const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [mobileNumber, setMobileNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAgeChecked, setIsAgeChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -51,7 +53,8 @@ const Login = () => {
       const data = await response.json();
       if (data) {
         document.cookie = `phone_number=+91${mobileNumber}; max-age=300`;
-        router.push("/otp-verification");
+        setIsLoading(true);
+        setTimeout(() => router.push("/otp-verification"), 1000);
         return;
       }
     }
@@ -60,13 +63,13 @@ const Login = () => {
   return (
     <div className="static z-10 flex h-[90vh] flex-col items-center justify-center text-lg text-white">
       <div className="flex h-full w-full max-w-xs flex-col items-center justify-center gap-5 sm:max-w-sm md:max-w-md md:gap-10 lg:max-w-lg">
-        <div>
+        <div className="rounded-full border-2 border-gray-800 bg-gray-950 p-3">
           <Image
-            src="/img/login.png"
+            src="/gif/login.gif"
             alt="Logo"
-            width={96}
-            height={96}
-            className="size-24 rounded-full border-2 border-white"
+            width={60}
+            height={60}
+            className="size-18 rounded-full border-2 border-gray-700 bg-gradient-to-t from-gray-950 to-gray-700 p-2"
           />
         </div>
         <div className="text-center">
@@ -119,6 +122,7 @@ const Login = () => {
         </Link>
         .
       </p>
+      {isLoading && <Loading />}
     </div>
   );
 };

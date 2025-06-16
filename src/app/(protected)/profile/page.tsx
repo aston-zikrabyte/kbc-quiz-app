@@ -46,7 +46,7 @@ const ProfilePage = () => {
               src="/img/avatar_img1.jpg"
               alt="profilepic"
             />
-            <AvatarFallback>Profile Pic</AvatarFallback>
+            <AvatarFallback className="text-black">loading...</AvatarFallback>
           </Avatar>
         </div>
         <div className="text-center">

@@ -1,6 +1,7 @@
 "use client";
 
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
+import Loading from "@/components/custom_components/Loading";
 import { Button } from "@/components/ui/button";
 import { getPhoneNumber } from "@/lib/auth";
 import Image from "next/image";
@@ -16,6 +17,7 @@ const OtpVerification = () => {
   const router = useRouter();
   const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Runs only in the browser
@@ -107,11 +109,12 @@ const OtpVerification = () => {
         router.replace("/setup");
       } else if (data.access) {
         document.cookie = `phone_number=; max-age=; path=/`;
-        document.cookie = `access_token=${data.access}; max-age=300; path=/`;
-        document.cookie = `refresh_token=${data.refresh}; max-age=500; path=/`;
-        document.cookie = `user_name=${data.user_name}; max-age=300; path=/`;
-        document.cookie = `role=${data.role}; max-age=300; path=/`;
-        router.replace("/home");
+        document.cookie = `access_token=${data.access}; max-age=1000; path=/`;
+        document.cookie = `refresh_token=${data.refresh}; max-age=1500; path=/`;
+        document.cookie = `user_name=${data.user_name}; max-age=1000; path=/`;
+        document.cookie = `role=${data.role}; max-age=1000; path=/`;
+        setIsLoading(true);
+        setTimeout(() => router.replace("/home"), 1000);
       } else {
         alert(data.error);
       }
@@ -134,13 +137,13 @@ const OtpVerification = () => {
     <div className="static z-10 flex h-[89vh] flex-col items-center justify-center text-lg text-white">
       <BackgroundGradient />
       <div className="flex h-full w-full max-w-xs flex-col items-center justify-center gap-3 sm:max-w-sm md:max-w-md md:gap-10 lg:max-w-lg">
-        <div>
+        <div className="rounded-full border-2 border-gray-800 bg-gray-950 p-3">
           <Image
-            src="/img/login.png"
+            src="/gif/login.gif"
             alt="Logo"
-            width={96}
-            height={96}
-            className="size-24 rounded-full border-2 border-white"
+            width={60}
+            height={60}
+            className="size-18 rounded-full border-2 border-gray-700 bg-gradient-to-t from-gray-950 to-gray-700 p-2"
           />
         </div>
         <div>
@@ -185,6 +188,7 @@ const OtpVerification = () => {
           {timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}
         </button>
       </p>
+      {isLoading && <Loading />}
     </div>
   );
 };

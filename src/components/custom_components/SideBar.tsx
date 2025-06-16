@@ -1,9 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { BiHomeAlt2 } from "react-icons/bi";
+import { GoTrophy } from "react-icons/go";
+import { PiWallet } from "react-icons/pi";
+import { BsPerson } from "react-icons/bs";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -15,10 +18,12 @@ const SideBar = () => {
     style:
       "border-t-2 border-t-[#4BE0F1] bg-gradient-to-t from-[#0E161F] to-[#2e9ba8] md:border-t-0 md:border-l-4 md:border-l-[#4BE0F1]",
     iconColor: "primary",
+    iconStyle: "size-7 text-[#53DBDB]",
   };
   const inactiveButtonStyle = {
     style: "",
     iconColor: "secondary",
+    iconStyle: "size-7",
   };
 
   const isButtonActive = (result: boolean) => {
@@ -60,13 +65,26 @@ const SideBar = () => {
           href={link.href}
           className={`flex h-full w-16 items-center justify-center rounded-t-lg transition-colors duration-150 ${isButtonActive(link.active).style} md:h-16 md:w-full md:justify-start md:rounded-t-none md:rounded-r-lg md:px-6`}
         >
-          <Image
-            src={`/icons/${link.icon}-${isButtonActive(link.active).iconColor}.png`}
-            alt={link.label}
-            width={30}
-            height={30}
-            className="md:mr-3"
-          />
+          {link.icon === "home" && (
+            <BiHomeAlt2
+              className={`${isButtonActive(link.active).iconStyle} md:mr-3`}
+            />
+          )}
+          {link.icon === "trophy" && (
+            <GoTrophy
+              className={`${isButtonActive(link.active).iconStyle} md:mr-3`}
+            />
+          )}
+          {link.icon === "wallet" && (
+            <PiWallet
+              className={`${isButtonActive(link.active).iconStyle} md:mr-3`}
+            />
+          )}
+          {link.icon === "user" && (
+            <BsPerson
+              className={`${isButtonActive(link.active).iconStyle} md:mr-3`}
+            />
+          )}
           <span className="hidden text-base font-medium md:inline">
             {link.label}
           </span>

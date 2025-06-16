@@ -45,7 +45,7 @@ const ProfileEdit = () => {
               src="/img/avatar_img1.jpg"
               alt="profilepic"
             />
-            <AvatarFallback>Profile Pic</AvatarFallback>
+            <AvatarFallback className="text-black">loading...</AvatarFallback>
           </Avatar>
           <div className="absolute right-1 bottom-1 cursor-pointer rounded-full border-1 border-white bg-black p-2 text-white shadow-lg">
             <FaCamera />
