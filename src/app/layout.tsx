@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
 import HomeLayout from "@/components/custom_components/HomeLayout";
+import { Toaster } from "@/components/ui/sonner";
 
 const AppName = process.env.NEXT_PUBLIC_APP_NAME;
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={`font-calibre bg-[#050A0E]`}>
         <BackgroundGradient />
         <HomeLayout>{children}</HomeLayout>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

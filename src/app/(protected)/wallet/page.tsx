@@ -1,8 +1,10 @@
 "use client";
+import { getSession } from "@/app/_lib/auth";
+import Loading from "@/components/custom_components/Loading";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const transactions = [
   {
@@ -60,7 +62,46 @@ const bonusTransactions = [
 ];
 
 const WalletPage = () => {
+  const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [activeTab, setActiveTab] = useState<"wallet" | "bonus">("wallet");
+  type WalletData = {
+    recharge?: { total?: number };
+    bonus?: { total?: number };
+    // Add other properties as needed
+  };
+  const [walletData, setWalletData] = useState<WalletData>();
+  const [accessToken, setAccessToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSession() {
+      const session = await getSession();
+      const access_token: string = session?.access_token || "";
+      setAccessToken(access_token);
+    }
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    async function fetchWalletData() {
+      if (!accessToken) return;
+      const response = await fetch(
+        `${ServerUrl}game/my-wallet-details/?include_transactions=${true}&filter_by=all`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.ok) {
+        setIsLoading(false);
+        const data = await response.json();
+        setWalletData(data.wallet);
+      }
+    }
+    fetchWalletData();
+  }, [accessToken]);
 
   return (
     <section className="static flex h-[90vh] flex-col gap-5 px-5 py-5 font-bold text-white md:ml-48 md:px-20 lg:px-40 xl:px-60">
@@ -88,7 +129,7 @@ const WalletPage = () => {
         <>
           <div className="flex flex-col items-start gap-2 rounded-xl bg-gradient-to-b from-[#DC83FB] via-[#952FD3] to-[#4D116C] p-3">
             <p className="font-light">Available Balance</p>
-            <p className="text-3xl">₹{2000}</p>
+            <p className="text-3xl">₹{walletData?.recharge?.total ?? 0}</p>
             <div className="mt-5 flex w-full flex-row justify-evenly gap-3 sm:w-auto sm:gap-4">
               <Link href={"/wallet/add-money"} className="">
                 <Button
@@ -172,7 +213,7 @@ const WalletPage = () => {
         <>
           <div className="flex flex-col items-start gap-2 rounded-xl bg-gradient-to-b from-[#DC83FB] via-[#952FD3] to-[#4D116C] p-3">
             <p className="font-light">Available Bonus</p>
-            <p className="text-3xl">₹{500}</p>
+            <p className="text-3xl">₹{walletData?.bonus?.total ?? 0}</p>
             <div className="mx-2 flex w-full justify-center text-center text-wrap sm:mx-5 sm:w-auto sm:justify-evenly sm:text-left">
               <p>Bonus can&apos;t be withdrawn. Use it to Play games.</p>
             </div>
@@ -211,6 +252,7 @@ const WalletPage = () => {
           </div>
         </>
       )}
+      {isLoading && <Loading />}
     </section>
   );
 };

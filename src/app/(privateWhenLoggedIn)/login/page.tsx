@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "sonner";
 import Loading from "@/components/custom_components/Loading";
 
 const Login = () => {
@@ -13,9 +14,13 @@ const Login = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAgeChecked, setIsAgeChecked] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 200);
+  });
 
   // Function to handle mobile number input change
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,22 +46,29 @@ const Login = () => {
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // setIsLoading(true);
     // Handle login or registration logic here
-    const response = await fetch(`${ServerUrl}account/login-or-signup/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ phone_number: `+91${mobileNumber}` }),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      if (data) {
-        document.cookie = `phone_number=+91${mobileNumber}; max-age=300`;
-        setIsLoading(true);
-        setTimeout(() => router.push("/otp-verification"), 1000);
-        return;
+    try {
+      const response = await fetch(`${ServerUrl}account/login-or-signup/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phone_number: `+91${mobileNumber}` }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          localStorage.setItem("phone_number", `+91${mobileNumber}`);
+          setTimeout(() => router.push("/otp-verification"), 100);
+          return;
+        }
+      } else {
+        setIsLoading(false);
+        toast.error("Server Error");
       }
+    } catch (err) {
+      toast.error(`Server error - ${err}`);
     }
   };
 

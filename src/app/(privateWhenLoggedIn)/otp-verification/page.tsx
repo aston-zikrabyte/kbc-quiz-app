@@ -3,11 +3,10 @@
 import BackgroundGradient from "@/components/custom_components/BackgroundGradient";
 import Loading from "@/components/custom_components/Loading";
 import { Button } from "@/components/ui/button";
-import { getPhoneNumber } from "@/lib/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
 import React, { useRef, useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const OtpVerification = () => {
   const OTP_TIMER_KEY = "otp_timer_end"; // Key for localStorage to store the timer state
@@ -17,22 +16,26 @@ const OtpVerification = () => {
   const router = useRouter();
   const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [deviceId, setDeviceId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Runs only in the browser
     setDeviceId(navigator.userAgent);
   }, []);
 
-  const [mobileNumber, setMobileNumber] = useState<string | null>(null);
+  const [mobileNumber, setMobileNumber] = useState<string | null>();
 
   useEffect(() => {
+    setTimeout(() => setIsLoading(false), 500);
     const fetchNumber = async () => {
-      const number = await getPhoneNumber();
+      const number = localStorage.getItem("phone_number");
+      if (!number) {
+        window.location.href = "/login";
+      }
       setMobileNumber(number);
     };
     fetchNumber();
-  }, [router]);
+  }, [mobileNumber]);
 
   // Timer effect
   useEffect(() => {
@@ -108,24 +111,23 @@ const OtpVerification = () => {
       if (data.message) {
         router.replace("/setup");
       } else if (data.access) {
-        document.cookie = `phone_number=; max-age=; path=/`;
         document.cookie = `access_token=${data.access}; max-age=1000; path=/`;
         document.cookie = `refresh_token=${data.refresh}; max-age=1500; path=/`;
-        document.cookie = `user_name=${data.user_name}; max-age=1000; path=/`;
-        document.cookie = `role=${data.role}; max-age=1000; path=/`;
-        setIsLoading(true);
-        setTimeout(() => (window.location.href = "/home"), 1000);
+        localStorage.setItem("user_name", data.user_name);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("isActive", data.is_active.toString());
+        localStorage.setItem("user_id", data.user_id);
+
+        setTimeout(() => router.push("/home"), 1000);
       } else {
-        alert(data.error);
+        toast.error(data.error);
       }
-    } else {
-      alert("Please enter a valid 4-digit OTP.");
     }
   };
 
   const handleResendOtp = () => {
     // Here you would trigger your resend OTP logic (API call, etc.)
-    alert("Resend OTP functionality not implemented yet.");
+    toast.success("OTP send successfully");
     setTimer(30); // Reset timer to 30 seconds
     // Optionally, clear OTP fields:
     inputRefs.current.forEach(input => input && (input.value = ""));

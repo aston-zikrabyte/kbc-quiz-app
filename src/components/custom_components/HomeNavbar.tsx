@@ -1,18 +1,20 @@
-import { getSession } from "@/lib/auth";
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const HomeNavbar = () => {
-  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const [user_name, setUserName] = useState<string>("");
 
   useEffect(() => {
     async function fetchSession() {
-      const session = await getSession();
-      setUserName(session?.user_name);
+      const user_name: string = localStorage.getItem("user_name") || "";
+      setUserName(user_name);
     }
     fetchSession();
-  }, [userName]);
+  }, [user_name]);
+
   const pathname = usePathname();
   const isHomePage = pathname === "/home";
   return (
@@ -28,7 +30,7 @@ const HomeNavbar = () => {
             </div>
           </Link>
           <p className="max-md:invisible max-md:order-1 md:text-lg">
-            Welcome, {userName}
+            Welcome, {user_name}
           </p>
         </div>
       )}

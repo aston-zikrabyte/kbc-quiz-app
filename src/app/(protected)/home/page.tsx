@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -10,8 +10,49 @@ import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getSession } from "@/app/_lib/auth";
 
 const HomePage = () => {
+  const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  type Banner = {
+    id: string | number;
+    title?: string;
+    description?: string;
+    // add other properties if needed
+  };
+
+  const [bannerData, setBannerData] = useState<Banner[]>([]);
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    async function fetchSession() {
+      let access_token = "";
+      const session = await getSession();
+      if (session && session.access_token) {
+        access_token = session.access_token;
+        setAccessToken(access_token);
+      }
+    }
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    async function fetchBanner() {
+      if (!accessToken) return;
+      const response = await fetch(`${ServerUrl}game/fetch-banners/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setBannerData(data.banners);
+      }
+    }
+    fetchBanner();
+  }, [accessToken]);
   return (
     <div className="static h-[90vh] flex-col justify-center px-5 py-5 text-2xl font-bold text-white max-[400px]:mb-24 md:ml-48 md:px-20">
       <div className="mb-5 flex items-center justify-end gap-3">
@@ -32,24 +73,15 @@ const HomePage = () => {
           }}
         >
           <CarouselContent className="h-60">
-            <CarouselItem>
-              <div className="h-full rounded-2xl bg-purple-400 p-4 text-center">
-                <h2 className="text-xl font-bold">WIN BIG PRIZE</h2>
-                <p className="mt-2">Play and get prizes</p>
-              </div>
-            </CarouselItem>
-            <CarouselItem>
-              <div className="h-full rounded-2xl bg-purple-400 p-4 text-center">
-                <h2 className="text-xl font-bold">Explore Exciting Features</h2>
-                <p className="mt-2">Discover new ways to play and win!</p>
-              </div>
-            </CarouselItem>
-            <CarouselItem>
-              <div className="h-full rounded-2xl bg-purple-400 p-4 text-center">
-                <h2 className="text-xl font-bold">Explore Exciting Features</h2>
-                <p className="mt-2">Discover new ways to play and win!</p>
-              </div>
-            </CarouselItem>
+            {bannerData &&
+              bannerData.map(item => (
+                <CarouselItem key={item?.id}>
+                  <div className="h-full rounded-2xl bg-purple-400 p-4 text-center">
+                    <h2 className="text-xl font-bold">{item?.title}</h2>
+                    <p className="mt-2">{item?.description}</p>
+                  </div>
+                </CarouselItem>
+              ))}
           </CarouselContent>
         </Carousel>
       </div>

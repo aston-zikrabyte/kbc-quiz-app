@@ -1,15 +1,53 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/app/_lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Loading from "@/components/custom_components/Loading";
 
 const ProfilePage = () => {
   const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    user_name: "",
+    mobile: "",
+    profileUrl: "",
+  });
+
+  useEffect(() => {
+    async function fetchSession() {
+      const session = await getSession();
+      const access_token = session?.access_token ?? "";
+      setAccessToken(access_token);
+    }
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!accessToken) return; // Wait until accessToken is set
+      const response = await fetch(`${ServerUrl}account/manage-profile/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+      setIsLoading(false);
+      setUserData({
+        user_name: data.user.user_name,
+        mobile: data.user.phone_number,
+        profileUrl: data.user.profile_picture,
+      });
+    }
+    fetchData();
+  }, [accessToken]);
 
   const handleLogout = async () => {
     const sessionData = await getSession();
@@ -25,11 +63,13 @@ const ProfilePage = () => {
     });
     const data = await response.json();
     if (!data.error) {
-      document.cookie = `phone_number=; max-age=; path=/`;
+      localStorage.removeItem("phone_number");
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("role");
+      localStorage.removeItem("isActive");
+      localStorage.removeItem("user_id");
       document.cookie = `access_token=; max-age=; path=/`;
       document.cookie = `refresh_token=; max-age=; path=/`;
-      document.cookie = `user_name=; max-age=; path=/`;
-      document.cookie = `role=; max-age=; path=/`;
       redirect("/login");
     } else {
       alert(data.error);
@@ -43,15 +83,15 @@ const ProfilePage = () => {
           <Avatar className="h-36 w-36">
             <AvatarImage
               className="object-cover"
-              src="/img/avatar_img1.jpg"
+              src={`${userData.profileUrl}`}
               alt="profilepic"
             />
             <AvatarFallback className="text-black">loading...</AvatarFallback>
           </Avatar>
         </div>
         <div className="text-center">
-          <p className="text-2xl">John Doe</p>
-          <p className="text-gray-400">9898098098</p>
+          <p className="text-2xl">{userData.user_name}</p>
+          <p className="text-gray-400">{userData.mobile}</p>
         </div>
         <div
           className="cursor-pointer rounded-full border-t-2 border-t-[#51D7D7] bg-[#51D7D7]/10 px-3 py-2 text-[#51D7D7]"
@@ -180,7 +220,7 @@ const ProfilePage = () => {
             <Avatar className="mb-4 h-24 w-24">
               <AvatarImage
                 className="object-cover"
-                src="/img/avatar_img1.jpg"
+                src={`${userData.profileUrl}`}
                 alt="profilepic"
               />
               <AvatarFallback>Profile Pic</AvatarFallback>
@@ -236,6 +276,7 @@ const ProfilePage = () => {
           </div>
         </div>
       )}
+      {isLoading && <Loading />}
     </div>
   );
 };

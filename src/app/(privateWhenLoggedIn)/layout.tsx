@@ -1,6 +1,6 @@
 "use client";
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/app/_lib/auth";
 import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 
