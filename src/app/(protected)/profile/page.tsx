@@ -69,7 +69,6 @@ const ProfilePage = () => {
       localStorage.removeItem("isActive");
       localStorage.removeItem("user_id");
       document.cookie = `access_token=; max-age=; path=/`;
-      document.cookie = `refresh_token=; max-age=; path=/`;
       redirect("/login");
     } else {
       alert(data.error);

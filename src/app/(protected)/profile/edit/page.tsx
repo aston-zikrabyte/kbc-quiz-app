@@ -12,8 +12,6 @@ import { getSession } from "@/app/_lib/auth";
 import { useRouter } from "next/navigation";
 import ImageCropModal from "@/components/custom_components/ProfileEditModal";
 
-// --- Modal for image upload and crop ---
-
 const ProfileEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [accessToken, setAccessToken] = useState("");
@@ -26,7 +24,8 @@ const ProfileEdit = () => {
     profileUrl: "",
   });
   const [showCropModal, setShowCropModal] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string>("/img/avatar_img1.jpg");
+  // Remove separate avatarUrl state - use userData.profileUrl instead
+  const [newProfileImage, setNewProfileImage] = useState<string | null>(null); // Store cropped blob URL
 
   useEffect(() => {
     async function fetchSession() {
@@ -39,7 +38,7 @@ const ProfileEdit = () => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!accessToken) return; // Wait until accessToken is set
+      if (!accessToken) return;
       const response = await fetch(`${ServerUrl}account/manage-profile/`, {
         method: "GET",
         headers: {
@@ -79,7 +78,6 @@ const ProfileEdit = () => {
   ) => {
     e.preventDefault();
     try {
-      // Prepare form data for image and profile fields
       const formData = new FormData();
 
       // Only send user_name if changed
@@ -87,10 +85,16 @@ const ProfileEdit = () => {
         formData.append("user_name", userData.name);
       }
 
-      // Only send profile_pic if avatarUrl is a blob (cropped/new image)
-      if (avatarUrl && avatarUrl.startsWith("blob:")) {
-        const blob = await fetch(avatarUrl).then(r => r.blob());
-        formData.append("profile_picture", blob, "profile.jpg");
+      // Only send profile_pic if there's a new cropped image
+      if (newProfileImage && newProfileImage.startsWith("blob:")) {
+        try {
+          const blob = await fetch(newProfileImage).then(r => r.blob());
+          formData.append("profile_picture", blob, "profile.jpg");
+        } catch (error) {
+          console.error("Error converting blob to file:", error);
+          toast.error("Error processing profile image");
+          return;
+        }
       }
 
       // Only send email if it is being added (not updated)
@@ -102,31 +106,51 @@ const ProfileEdit = () => {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          // 'Content-Type': 'multipart/form-data',
         },
         body: formData,
       });
+
       if (response.ok) {
         const data = await response.json();
         if (!data.error) {
           toast.success(data.message);
           localStorage.setItem("user_name", userData.name);
           localStorage.setItem("email", userData.email);
+
           if (data.message !== "No changes made") router.replace("/profile");
         }
       } else {
+        const errorData = await response.json();
+        console.error("Update failed:", errorData);
         toast.error("Not updated!");
       }
     } catch (error) {
+      console.error("Server error:", error);
       toast.error(`Server error - ${error}`);
     }
   };
 
   // Handle avatar update after cropping
   const handleAvatarCrop = (croppedUrl: string) => {
-    setAvatarUrl(croppedUrl);
-    // Here you can also upload the cropped image to your server if needed
-    setUserData(prev => ({ ...prev, profileUrl: croppedUrl }));
+    // Clean up previous blob URL if exists
+    if (newProfileImage && newProfileImage.startsWith("blob:")) {
+      URL.revokeObjectURL(newProfileImage);
+    }
+    setNewProfileImage(croppedUrl);
   };
+
+  // Cleanup blob URLs on component unmount
+  useEffect(() => {
+    return () => {
+      if (newProfileImage && newProfileImage.startsWith("blob:")) {
+        URL.revokeObjectURL(newProfileImage);
+      }
+    };
+  }, [newProfileImage]);
+
+  // Determine which image to display in avatar
+  const displayImageUrl = newProfileImage || userData.profileUrl;
 
   return (
     <div className="static mb-20 flex h-auto flex-col gap-3 px-5 pt-5 font-bold text-white max-md:pb-14 md:ml-48 md:px-20 lg:px-40 xl:px-60">
@@ -136,7 +160,7 @@ const ProfileEdit = () => {
           <Avatar className="h-36 w-36">
             <AvatarImage
               className="object-cover"
-              src={`${userData.profileUrl}`}
+              src={displayImageUrl}
               alt="profilepic"
             />
             <AvatarFallback className="text-black">loading...</AvatarFallback>

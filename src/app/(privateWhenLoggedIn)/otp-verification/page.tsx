@@ -95,6 +95,7 @@ const OtpVerification = () => {
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     const otp = inputRefs.current.map(input => input?.value).join("");
+    setIsLoading(true);
     if (otp.length === 4) {
       const response = await fetch(`${ServerUrl}account/verify-otp/`, {
         method: "POST",
@@ -111,28 +112,46 @@ const OtpVerification = () => {
       if (data.message) {
         router.replace("/setup");
       } else if (data.access) {
-        document.cookie = `access_token=${data.access}; max-age=1000; path=/`;
-        document.cookie = `refresh_token=${data.refresh}; max-age=1500; path=/`;
+        document.cookie = `access_token=${data.access}; max-age=7200; path=/`;
+        document.cookie = `refresh_token=${data.refresh}; max-age=31536000; path=/`;
         localStorage.setItem("user_name", data.user_name);
         localStorage.setItem("role", data.role);
         localStorage.setItem("isActive", data.is_active.toString());
         localStorage.setItem("user_id", data.user_id);
-
-        setTimeout(() => router.push("/home"), 1000);
+        setTimeout(() => (window.location.href = "/home"), 1000);
       } else {
+        setIsLoading(false);
         toast.error(data.error);
       }
     }
   };
 
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     // Here you would trigger your resend OTP logic (API call, etc.)
-    toast.success("OTP send successfully");
-    setTimer(30); // Reset timer to 30 seconds
-    // Optionally, clear OTP fields:
-    inputRefs.current.forEach(input => input && (input.value = ""));
-    setOtp("");
-    inputRefs.current[0]?.focus();
+    const response = await fetch(`${ServerUrl}account/login-or-signup/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone_number: `+91${mobileNumber}` }),
+    });
+    if (response.ok) {
+      toast.success("OTP send successfully");
+      setTimer(30); // Reset timer to 30 seconds
+      // Optionally, clear OTP fields:
+      inputRefs.current.forEach(input => input && (input.value = ""));
+      setOtp("");
+      inputRefs.current[0]?.focus();
+      const data = await response.json();
+      if (data) {
+        localStorage.setItem("phone_number", `+91${mobileNumber}`);
+        setTimeout(() => router.push("/otp-verification"), 100);
+        return;
+      }
+    } else {
+      setIsLoading(false);
+      toast.error("Server Error");
+    }
   };
 
   return (

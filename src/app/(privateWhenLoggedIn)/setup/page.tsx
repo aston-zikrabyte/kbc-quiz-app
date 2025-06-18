@@ -102,8 +102,8 @@ const SetupProfile = () => {
       });
       const data = await response.json();
       if (!data.error) {
-        document.cookie = `access_token=${data.access}; max-age=1000; path=/`;
-        document.cookie = `refresh_token=${data.refresh}; max-age=1500; path=/`;
+        document.cookie = `access_token=${data.access}; max-age=7200; path=/`;
+        document.cookie = `refresh_token=${data.refresh}; max-age=31536000; path=/`;
         localStorage.setItem("user_name", data.user_name);
         localStorage.setItem("role", data.role);
         localStorage.setItem("isActive", data.is_active.toString());

@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getSession } from "@/app/_lib/auth";
+import Loading from "@/components/custom_components/Loading";
 
 const HomePage = () => {
   const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -18,11 +19,12 @@ const HomePage = () => {
     id: string | number;
     title?: string;
     description?: string;
-    // add other properties if needed
+    image?: string;
   };
 
   const [bannerData, setBannerData] = useState<Banner[]>([]);
   const [accessToken, setAccessToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchSession() {
@@ -47,6 +49,7 @@ const HomePage = () => {
         },
       });
       if (response.ok) {
+        setIsLoading(false);
         const data = await response.json();
         setBannerData(data.banners);
       }
@@ -161,6 +164,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      {isLoading && <Loading />}
     </div>
   );
 };

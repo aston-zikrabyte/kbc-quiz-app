@@ -1,48 +1,98 @@
 "use client";
 
+import { getSession } from "@/app/_lib/auth";
+import Loading from "@/components/custom_components/Loading";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CashGames = () => {
+  const ServerUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  const [accessToken, setAccessToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"singleplayer" | "multiplayer">(
     "singleplayer"
   );
 
-  const [activeMultiplayer, setActiveMultiplayer] = useState<
-    "withOne" | "withFive" | null
-  >(null);
+  const [activeMultiplayer, setActiveMultiplayer] = useState<number | null>(
+    null
+  );
 
-  const [activeAmount, setActiveAmount] = useState<
-    | "single-25"
-    | "single-50"
-    | "single-100"
-    | "multiplayer1v1-50"
-    | "multiplayer1v1-100"
-    | "multiplayer1v5-50"
-    | "multiplayer1v5-100"
-    | "multiplayer1v5-150"
-    | null
-  >(null);
+  const [activeAmount, setActiveAmount] = useState<string | null>(null);
 
-  const [activeTopic, setActiveTopic] = useState<
-    "history" | "sports" | "politics" | "ai" | "films" | "technology" | null
-  >(null);
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
 
-  const selectAmount = (
-    amount:
-      | "single-25"
-      | "single-50"
-      | "single-100"
-      | "multiplayer1v1-50"
-      | "multiplayer1v1-100"
-      | "multiplayer1v5-50"
-      | "multiplayer1v5-100"
-      | "multiplayer1v5-150"
-      | null
-  ) => {
+  const selectAmount = (amount: string | null) => {
     setActiveAmount(amount);
     setActiveTopic(null);
   };
+
+  type GameSetting = {
+    player_type: string;
+    available_amounts: { amount: number; winning_price: number }[];
+    _id: string;
+    num_of_players: number;
+  };
+
+  const [gameSettings, setGameSettings] = useState<GameSetting[]>([]);
+
+  type CategoryType = {
+    _id: string;
+    category: string;
+  };
+  const [categories, setCategories] = useState<CategoryType[]>();
+
+  useEffect(() => {
+    async function fetchSession() {
+      const session = await getSession();
+      const access_token = session?.access_token ?? "";
+      setAccessToken(access_token);
+    }
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      if (!accessToken) return;
+      const response = await fetch(
+        `${ServerUrl}kbc_admin/manage-game-setups/?game_mode=game_mode&status=active`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.ok) {
+        setIsLoading(false);
+        const data = await response.json();
+        if (data.settings) setGameSettings(data.settings);
+      }
+    }
+    fetchSettings();
+  }, [accessToken]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      if (!accessToken) return;
+      const response = await fetch(
+        `${ServerUrl}kbc_admin/handle-categories/?status=active`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.ok) {
+        setIsLoading(false);
+        const data = await response.json();
+        if (data.categories) setCategories(data.categories);
+      }
+    }
+    fetchCategories();
+  }, [accessToken]);
 
   return (
     <div className="flex h-[90vh] flex-col gap-5 px-5 py-5 font-bold text-white sm:px-20 md:px-30 lg:px-50 xl:px-70">
@@ -89,63 +139,61 @@ const CashGames = () => {
                 <div className="flex flex-col gap-3">
                   <p className="text-lg">SELECT AMOUNT</p>
                   <div className="grid grid-cols-2 gap-6">
-                    <div
-                      className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "single-25" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                      onClick={() => selectAmount("single-25")}
-                    >
-                      <p className="text-2xl">🪙</p>
-                      <p className="text-sm">₹25</p>
-                      <div
-                        className={`flex w-full items-center justify-center rounded-full ${activeAmount === "single-25" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                      >
-                        <p className="text-xs">
-                          Winning Prize:{" "}
-                          <span
-                            className={`${activeAmount === "single-25" ? "text-white" : "text-[#4BE0F1]"}`}
-                          >
-                            ₹50
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "single-50" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                      onClick={() => selectAmount("single-50")}
-                    >
-                      <p className="text-2xl">🪙</p>
-                      <p className="text-sm">₹50</p>
-                      <div
-                        className={`flex w-full items-center justify-center rounded-full ${activeAmount === "single-50" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                      >
-                        <p className="text-xs">
-                          Winning Prize:{" "}
-                          <span
-                            className={`${activeAmount === "single-50" ? "text-white" : "text-[#4BE0F1]"}`}
-                          >
-                            ₹100
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "single-100" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                      onClick={() => selectAmount("single-100")}
-                    >
-                      <p className="text-2xl">🪙</p>
-                      <p className="text-sm">₹100</p>
-                      <div
-                        className={`flex w-full items-center justify-center rounded-full ${activeAmount === "single-100" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                      >
-                        <p className="text-xs">
-                          Winning Prize:{" "}
-                          <span
-                            className={`${activeAmount === "single-100" ? "text-white" : "text-[#4BE0F1]"}`}
-                          >
-                            ₹200
-                          </span>
-                        </p>
-                      </div>
-                    </div>
+                    {gameSettings &&
+                      gameSettings
+                        .filter(setting => setting["player_type"] === "single")
+                        .map(item =>
+                          item["available_amounts"].map(
+                            (
+                              amount: {
+                                amount:
+                                  | string
+                                  | number
+                                  | bigint
+                                  | boolean
+                                  | React.ReactElement<string>
+                                  | Iterable<React.ReactNode>
+                                  | React.ReactPortal
+                                  | Promise<React.AwaitedReactNode>
+                                  | null
+                                  | undefined;
+                                winning_price:
+                                  | string
+                                  | number
+                                  | bigint
+                                  | boolean
+                                  | React.ReactElement<string>
+                                  | Iterable<React.ReactNode>
+                                  | React.ReactPortal
+                                  | Promise<React.AwaitedReactNode>
+                                  | null
+                                  | undefined;
+                              },
+                              index: React.Key | null | undefined
+                            ) => (
+                              <div
+                                key={index}
+                                className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === `${amount.amount}` ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
+                                onClick={() => selectAmount(`${amount.amount}`)}
+                              >
+                                <p className="text-2xl">🪙</p>
+                                <p className="text-sm">₹{amount.amount}</p>
+                                <div
+                                  className={`flex w-full items-center justify-center rounded-full ${activeAmount === `${amount.amount}` ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
+                                >
+                                  <p className="text-xs">
+                                    Winning Prize:{" "}
+                                    <span
+                                      className={`${activeAmount === amount.amount ? "text-white" : "text-[#4BE0F1]"}`}
+                                    >
+                                      ₹{amount.winning_price}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            )
+                          )
+                        )}
                   </div>
                 </div>
               </div>
@@ -156,147 +204,89 @@ const CashGames = () => {
                 <Button size={"lg"}>Join Room</Button>
                 <p>SELECT PLAYERS</p>
                 <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                  <div
-                    className={`cursor-pointer rounded-lg border-t-2 border-t-[#202c38] ${activeMultiplayer === "withOne" ? "bg-[#AB39E8]" : "bg-[#0E161F]"} p-4 pb-7`}
-                    onClick={() => {
-                      setActiveMultiplayer("withOne");
-                      setActiveAmount(null);
-                      setActiveTopic(null);
-                    }}
-                  >
-                    <p className="text-lg">1 v/s 1</p>
-                    <p
-                      className={`text-sm font-thin ${activeMultiplayer === "withOne" ? "" : "text-gray-400"}`}
-                    >
-                      Compete with a single player
-                    </p>
-                  </div>
-                  <div
-                    className={`cursor-pointer rounded-lg border-t-2 border-t-[#202c38] ${activeMultiplayer === "withFive" ? "bg-[#AB39E8]" : "bg-[#0E161F]"} p-4 pb-7`}
-                    onClick={() => {
-                      setActiveMultiplayer("withFive");
-                      setActiveAmount(null);
-                      setActiveTopic(null);
-                    }}
-                  >
-                    <p className="text-lg">1 v/s 5</p>
-                    <p
-                      className={`text-sm font-thin ${activeMultiplayer === "withFive" ? "" : "text-gray-400"}`}
-                    >
-                      Compete in a group
-                    </p>
-                  </div>
+                  {gameSettings &&
+                    gameSettings
+                      .filter(setting => setting.player_type === "multi")
+                      .sort((a, b) => a.num_of_players - b.num_of_players)
+                      .map(item => (
+                        <div
+                          key={item["_id"]}
+                          className={`cursor-pointer rounded-lg border-t-2 border-t-[#202c38] ${activeMultiplayer === item.num_of_players ? "bg-[#AB39E8]" : "bg-[#0E161F]"} p-4 pb-7`}
+                          onClick={() => {
+                            setActiveMultiplayer(item.num_of_players);
+                            setActiveAmount(null);
+                            setActiveTopic(null);
+                          }}
+                        >
+                          <p className="text-lg">
+                            1 v/s {item.num_of_players - 1}
+                          </p>
+                          <p
+                            className={`text-sm font-thin ${activeMultiplayer === item.num_of_players ? "" : "text-gray-400"}`}
+                          >
+                            {item.num_of_players == 2
+                              ? "Compete with a single player"
+                              : "Compete in a group"}
+                          </p>
+                        </div>
+                      ))}
                 </div>
-                {activeMultiplayer === "withOne" ? (
+
+                {activeMultiplayer && (
                   <div className="flex flex-col gap-3 md:mb-20">
                     <p>SELECT AMOUNT</p>
                     <div className="grid grid-cols-2 gap-6 md:mb-20">
-                      <div
-                        className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "multiplayer1v1-50" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                        onClick={() => {
-                          setActiveAmount("multiplayer1v1-50");
-                        }}
-                      >
-                        <p className="text-2xl">🪙</p>
-                        <p className="text-sm">₹50</p>
-                        <div
-                          className={`flex w-full items-center justify-center rounded-full ${activeAmount === "multiplayer1v1-50" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                        >
-                          <p className="text-xs">
-                            Winning Prize:{" "}
-                            <span
-                              className={`${activeAmount === "multiplayer1v1-50" ? "text-white" : "text-[#4BE0F1]"}`}
-                            >
-                              ₹100
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "multiplayer1v1-100" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                        onClick={() => selectAmount("multiplayer1v1-100")}
-                      >
-                        <p className="text-2xl">🪙</p>
-                        <p className="text-sm">₹100</p>
-                        <div
-                          className={`flex w-full items-center justify-center rounded-full ${activeAmount === "multiplayer1v1-100" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                        >
-                          <p className="text-xs">
-                            Winning Prize:{" "}
-                            <span
-                              className={`${activeAmount === "multiplayer1v1-100" ? "text-white" : "text-[#4BE0F1]"}`}
-                            >
-                              ₹200
-                            </span>
-                          </p>
-                        </div>
-                      </div>
+                      {gameSettings
+                        .filter(
+                          setting =>
+                            setting.player_type === "multi" &&
+                            setting.num_of_players === activeMultiplayer
+                        )
+                        .flatMap(setting =>
+                          setting.available_amounts
+                            .sort((a, b) => a.amount - b.amount)
+                            .map(amount => {
+                              // Build a unique key and value for activeAmount
+                              const amountKey = `${setting.num_of_players - 1}-${amount.amount}`;
+                              return (
+                                <div
+                                  key={setting._id + "-" + amount.amount}
+                                  className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${
+                                    activeAmount === amountKey
+                                      ? "bg-[#AB39E8]"
+                                      : "border-t-2 border-t-[#202c38] bg-[#0E161F]"
+                                  } p-2`}
+                                  onClick={() => selectAmount(amountKey)}
+                                >
+                                  <p className="text-2xl">🪙</p>
+                                  <p className="text-sm">₹{amount.amount}</p>
+                                  <div
+                                    className={`flex w-full items-center justify-center rounded-full ${
+                                      activeAmount === amountKey
+                                        ? "bg-[#bc6ce7]"
+                                        : "bg-[#4BE0F1]/14"
+                                    } p-1`}
+                                  >
+                                    <p className="text-xs">
+                                      Winning Prize:{" "}
+                                      <span
+                                        className={`${
+                                          activeAmount === amountKey
+                                            ? "text-white"
+                                            : "text-[#4BE0F1]"
+                                        }`}
+                                      >
+                                        ₹{amount.winning_price}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })
+                        )}
                     </div>
                   </div>
-                ) : activeMultiplayer === "withFive" ? (
-                  <div className="flex flex-col gap-3">
-                    <p>SELECT AMOUNT</p>
-                    <div className="grid grid-cols-2 gap-6 md:mb-20">
-                      <div
-                        className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "multiplayer1v5-50" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                        onClick={() => selectAmount("multiplayer1v5-50")}
-                      >
-                        <p className="text-2xl">🪙</p>
-                        <p className="text-sm">₹50</p>
-                        <div
-                          className={`flex w-full items-center justify-center rounded-full ${activeAmount === "multiplayer1v5-50" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                        >
-                          <p className="text-xs">
-                            Winning Prize:{" "}
-                            <span
-                              className={`${activeAmount === "multiplayer1v5-50" ? "text-white" : "text-[#4BE0F1]"}`}
-                            >
-                              ₹300
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "multiplayer1v5-100" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                        onClick={() => selectAmount("multiplayer1v5-100")}
-                      >
-                        <p className="text-2xl">🪙</p>
-                        <p className="text-sm">₹100</p>
-                        <div
-                          className={`flex w-full items-center justify-center rounded-full ${activeAmount === "multiplayer1v5-100" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                        >
-                          <p className="text-xs">
-                            Winning Prize:{" "}
-                            <span
-                              className={`${activeAmount === "multiplayer1v5-100" ? "text-white" : "text-[#4BE0F1]"}`}
-                            >
-                              ₹600
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        className={`flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-md ${activeAmount === "multiplayer1v5-150" ? "bg-[#AB39E8]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-2`}
-                        onClick={() => selectAmount("multiplayer1v5-150")}
-                      >
-                        <p className="text-2xl">🪙</p>
-                        <p className="text-sm">₹150</p>
-                        <div
-                          className={`flex w-full items-center justify-center rounded-full ${activeAmount === "multiplayer1v5-150" ? "bg-[#bc6ce7]" : "bg-[#4BE0F1]/14"} p-1`}
-                        >
-                          <p className="text-xs">
-                            Winning Prize:{" "}
-                            <span
-                              className={`${activeAmount === "multiplayer1v5-150" ? "text-white" : "text-[#4BE0F1]"}`}
-                            >
-                              ₹800
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
+                )}
               </div>
             </>
           )}
@@ -308,42 +298,18 @@ const CashGames = () => {
                 ? "SELECT AMOUNT AND TO SELECT TOPIC"
                 : "SELECT TOPIC"}
             </h2>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "history" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("history")}
-            >
-              <p>History</p>
-            </div>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "sports" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("sports")}
-            >
-              <p>Sports</p>
-            </div>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "politics" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("politics")}
-            >
-              <p>Politics</p>
-            </div>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "ai" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("ai")}
-            >
-              <p>Ai</p>
-            </div>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "films" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("films")}
-            >
-              <p>Films</p>
-            </div>
-            <div
-              className={`w-full rounded-lg ${activeTopic === "technology" ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-              onClick={() => activeAmount && setActiveTopic("technology")}
-            >
-              <p>Technology</p>
-            </div>
+            {categories &&
+              categories.map(category => (
+                <div
+                  key={category._id}
+                  className={`w-full rounded-lg ${activeTopic === category.category ? "bg-[#bc6ce7]" : "border-t-2 border-t-[#202c38] bg-[#0E161F]"} p-4 ${!activeAmount ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                  onClick={() =>
+                    activeAmount && setActiveTopic(category.category)
+                  }
+                >
+                  <p>{category.category}</p>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -357,6 +323,7 @@ const CashGames = () => {
           Create Room
         </Button>
       </div>
+      {isLoading && <Loading />}
     </div>
   );
 };
